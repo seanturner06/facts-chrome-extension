@@ -37,6 +37,17 @@ app.get('api/images', async(req, res) => {
             url: result.user.links.html
         }
     }));
+
+    // Send the filtered results back to the client
+    res.json({images: filteredResults});
+
+    // Make sure to properly let Unplash know that the images were 'downloaded.'
+    filteredResults.forEach(image => {
+        fetch(image.links.download_location, {
+            method:'GET', 
+            headers:{
+                Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
+            }
+        }).catch(error => console.error('Error triggering download:', error));
+    });
 });
-
-
