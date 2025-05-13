@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="newtab.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Inter';
+            /* background-color: #f5f5f5; */
+            background-image: url('background.jpg');
+            background-size: cover; 
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Containers */
+        #fact-container {
+            background-color: rgba(255, 255, 255, 0.566);
+            backdrop-filter: blur(15px);
+            color: rgb(255, 255, 255);
+            padding: 20px 30px;
+            border-radius: 10px;
+            font-size: 40px;
+            min-width: 55%;
+            max-width: 80%;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+        #fact-container:hover{
+            transition: transform 0.3s ease;
+            transform: translateY(-50%) scale(1.1); 
+        }
+
+        #google-container {
+            margin-top: 200px; 
+            font-size: 100px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4285F4;
+        }
+
+        #search-container {
+            width: 65%;
+            max-width: 550px;
+            margin-bottom: 100px; 
+        }
+
+        /* Form styling */
+        form {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            font-size: 28px;
+            outline: none;
+            box-shadow: 0 1px 6px rgba(10, 10, 10, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:hover,
+        input[type="text"]:focus {
+            box-shadow: 0 1px 8px rgba(32, 33, 36, 0.2);
+            border-color: rgba(223, 225, 229, 0);
+        }
+
+        input[type="text"]::placeholder {
+            color: #9aa0a6;
+        }
+
+        /* Google logo colors */
+        #google-container span:nth-child(1) {
+            color: #4285F4;
+        }
+
+        #google-container span:nth-child(2) {
+            color: #EA4335;
+        }
+
+        #google-container span:nth-child(3) {
+            color: #FBBC05;
+        }
+
+        #google-container span:nth-child(4) {
+            color: #4285F4;
+        }
+
+        #google-container span:nth-child(5) {
+            color: #34A853;
+        }
+
+        #google-container span:nth-child(6) {
+            color: #EA4335;
+        }
+        #attribution {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+        }
+        #attribution a {
+            color: #ddd;
+            text-decoration: none;
+        }
+
+        #attribution a:hover {
+            text-decoration: underline;
+        }
+        svg{
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a7a8ab;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="google-container">
+        <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+    </div>
+    <div id="search-container">
+        <form action="https://www.google.com/search" method="get">
+            <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+                <path
+                    d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z" />
+            </svg>
+            <input type="text" name="q" placeholder="Search...">
+        </form>
+    </div>
+    <div id="fact-container">Loading Fact...</div>
+    <div id="attribution">
+        Photo by <a id="author" href="#" target="_blank"> Photographer</a>
+    </div>
+</body>
+
+</html>
