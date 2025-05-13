@@ -22,20 +22,20 @@ function typeEffect(element, text, speed, callback=null){
 
 document.addEventListener('DOMContentLoaded', () => {
     // Fetch a random image from local storage
-    chrome.storage.local.get(['cachedImage', 'photographer', 'photographerUrl'], (result) => {
-        if (result.cachedImage) {
-            document.body.style.backgroundImage = `url('${result.cachedImage}')`;
+    chrome.storage.local.get('currentImage', (result) => {
+        if (result.currentImage) {
+            document.body.style.backgroundImage = `url('${result.currentImage.url}')`;
         } else {
           document.body.style.backgroundColor = '#333'; // fallback color
         }
 
         const authorLink = document.getElementById('author'); 
-        authorLink.textContent = result.photographer;
-        authorLink.href = result.photographerUrl;
+        authorLink.textContent = result.currentImage.photographer;
+        authorLink.href = result.currentImage.photographerUrl;
 
         const img = new Image();
         img.crossOrigin = 'Anonymous';
-        img.src = result.cachedImage;
+        img.src = result.currentImage.url;
         img.onload = () => {
             const canvas = document.createElement('canvas');
             canvas.width = 50;
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Trigger background to fetch a new image for next time
-    chrome.runtime.sendMessage({ action: 'fetchNewImage' });
+    chrome.runtime.sendMessage({ action: 'fetchImage' });
 
     // Fetch a fact from the local JSON file
     fetch('facts.json')

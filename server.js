@@ -11,7 +11,7 @@ app.use(cors({
 }));
 
 // Route to fetch a batch of random images
-app.get('api/images', async(req, res) => {
+app.get('/api/images', async(req, res) => {
     const categoryIdx = Math.floor(Math.random() * process.env.CATEGORIES.length);
     const category = process.env.CATEGORIES[categoryIdx] || process.env.CATEGORIES[0];
     const pageIdx = Math.floor(Math.random() * process.env.PAGES.length);
@@ -19,7 +19,7 @@ app.get('api/images', async(req, res) => {
     const query = `https://api.unsplash.com/search/photos?query=${category}&page=${page}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`;
     
     // Fetch the data from Unsplash API
-    const response = await(fetch(query));
+    const response = await fetch(query);
 
     if(!response.ok) {
         return res.status(response.status).json({ error: 'Failed to fetch data from Unsplash API' });
