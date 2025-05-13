@@ -12,10 +12,13 @@ app.use(cors({
 
 // Route to fetch a batch of random images
 app.get('/api/images', async(req, res) => {
-    const categoryIdx = Math.floor(Math.random() * process.env.CATEGORIES.length);
-    const category = process.env.CATEGORIES[categoryIdx] || process.env.CATEGORIES[0];
-    const pageIdx = Math.floor(Math.random() * process.env.PAGES.length);
-    const page = process.env.PAGES[pageIdx] || process.env.PAGES[0];
+    // Parse comma-separated environment variables
+    const categories = (process.env.CATEGORIES || 'nature').split(',').map(item => item.trim());
+    const pages = (process.env.PAGES || '1').split(',').map(item => Number(item.trim()));
+    const categoryIdx = Math.floor(Math.random() * categories.length);
+    const category = categories[categoryIdx] || categories[0];
+    const pageIdx = Math.floor(Math.random() * pages.length);
+    const page = pages[pageIdx] || pages[0];
     const query = `https://api.unsplash.com/search/photos?query=${category}&page=${page}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`;
     
     // Fetch the data from Unsplash API
@@ -43,11 +46,15 @@ app.get('/api/images', async(req, res) => {
 
     // Make sure to properly let Unplash know that the images were 'downloaded.'
     filteredResults.forEach(image => {
-        fetch(image.links.download_location, {
+        fetch(image.download_location, {
             method:'GET', 
             headers:{
                 Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
             }
         }).catch(error => console.error('Error triggering download:', error));
     });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
