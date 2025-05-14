@@ -37,7 +37,7 @@ app.get('/api/images', async(req, res) => {
     // Select the first 10 images from the results to send back
     const filteredResults = data.results.slice(0,5).map(result =>({
         imageId:result.id, 
-        url: result.urls.regular,
+        url: `${result.urls.raw}&w=1200&q=80&fm=jpg`,
         downloadLocation: result.links.download_location,
         photographer:{
             name: result.user.name,
