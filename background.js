@@ -149,14 +149,13 @@ async function updateFactCache() {
         }
     }
     , resolve);
-    }
-    );
+    });
 
     // Store the current fact in local storage separately
     await new Promise(resolve => {
         chrome.storage.local.set({
         currentFact: fact
-    }, 
+    },
         resolve);
     });
 
