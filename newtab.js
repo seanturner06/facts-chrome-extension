@@ -69,9 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         chrome.storage.local.get('currentFact', (result) => {
-            if(result.currentFact){
+            if(result && result.currentFact && result.currentFact.fact) {
                 const factContainer = document.getElementById('fact-container');
                 typeEffect(factContainer, result.currentFact.fact, 25);
+            }else {
+                console.error("No fact found in local storage.");
             }
         })
     });

@@ -126,7 +126,7 @@ async function updateFactCache() {
         await fetchAndCacheFacts();
 
         const updatedStorage = await chrome.storage.local.get('factCache'); 
-        cache = updatedStorage.factCache; 
+        cache = updatedStorage.factCache;
         console.log(updatedStorage.factCache);
 
         if(!cache || !cache.facts || cache.facts.length === 0) {
@@ -147,9 +147,7 @@ async function updateFactCache() {
 
     // Store the current fact in local storage separately
     await chrome.storage.local.set({
-        currentFact:{
-            fact: fact
-        }
+        currentFact: fact
     });
 
     return fact;
