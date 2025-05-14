@@ -67,24 +67,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('fact-container').style.backgroundColor = `rgba(255, 255, 255, 0.8)`;
             }
         }
+
+        chrome.storage.local.get('currentFact', (result) => {
+            if(result.currentFact){
+                const factContainer = document.getElementById('fact-container');
+                typeEffect(factContainer, result.currentFact.fact, 25);
+            }
+        })
     });
 
     // Trigger background to fetch a new image for next time
     chrome.runtime.sendMessage({ action: 'fetchImage' });
 
-    // Fetch a fact from the local JSON file
-    fetch('facts.json')
-        .then(response => response.json())
-        .then(facts => {
-            const factIdx = Math.floor(Math.random() * facts.length);
-            const randomFact = facts[factIdx].fact;
-
-            const factContainer = document.getElementById('fact-container');
-            // Call the typeEffect function to animate the text
-            typeEffect(factContainer, randomFact, 25);
-        })
-        .catch(error => {
-            console.error('Error fetching the fact:', error);
-            factContainer.textContent = 'Failed to load a fact.';
-        });
+    // Trigger background to fetch a new fact for next time
+    chrome.runtime.sendMessage({ action: 'fetchFact' });
 });

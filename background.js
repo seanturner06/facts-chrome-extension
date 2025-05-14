@@ -5,7 +5,7 @@ async function fetchAndCacheImages() {
     let cache = storage.imageCache || { images: [] };
 
     // If we already have enough images, do not fetch new ones
-    if(cache.images.length >= 10){
+    if(cache.images.length >= 5){
         console.log(`Already have ${cache.images.length} images in cache`);
         return cache.images;
     }
@@ -13,7 +13,7 @@ async function fetchAndCacheImages() {
     console.log(`Fetching new images...`);
 
     // Fetch a batch of images from the proxy server
-    const response = await fetch('http://localhost:3000/api/images');
+    const response = await fetch(new URL('http://localhost:3000/api/images'));
 
     if(!response.ok){
         throw new Error(`Server responded with status: ${response.status}`);
@@ -76,13 +76,94 @@ async function updateImageCache(){
     return image;
 }
 
+async function fetchAndCacheFacts() {
+    // If we do not have enough images in the cache, fetch a new batch 
+    const storage = await chrome.storage.local.get('factCache');
+    let cache = storage.factCache || { facts: [] };
+
+    // If we already have enough images, do not fetch new ones
+    if(cache.facts.length >= 5){
+        console.log(`Already have ${cache.facts.length} facts in cache`);
+        return cache.facts;
+    }
+
+    console.log(`Fetching new facts...`);
+
+    // Fetch a batch of images from the proxy server
+    const response = await fetch(new URL('http://localhost:3000/api/facts'));
+
+    if(!response.ok){
+        throw new Error(`Server responded with status: ${response.status}`);
+    }
+
+    // Parse the response as JSON
+    const data = await response.json();
+
+    console.log(data);
+
+    // Create a new factCache 
+    const updatedCache = {
+        facts: [...cache.facts, ...data.facts], 
+        lastUpdated: Date.now()
+    };
+    
+    // Cache the images in local storage
+    await chrome.storage.local.set({'factCache': updatedCache});
+    console.log(`Successfully cached ${data.facts.length} facts`);
+    // Return the new facts
+    return updatedCache.facts;
+}
+
+async function updateFactCache() {
+    const storage = await chrome.storage.local.get('factCache');
+    let cache = storage.factCache || { facts: [] };
+
+    console.log(cache);
+
+    // If we do not have enough fact in the cache, fetch a new batch
+    if(cache.facts.length <= 1){
+        console.log("Fetching new facts...");
+        await fetchAndCacheFacts();
+
+        const updatedStorage = await chrome.storage.local.get('factCache'); 
+        cache = updatedStorage.factCache; 
+        console.log(updatedStorage.factCache);
+
+        if(!cache || !cache.facts || cache.facts.length === 0) {
+            console.error("No facts found in cache after fetching.");
+            return;
+        }
+    }
+
+    // Select an fact from the cache
+    const fact = cache.facts.shift();
+    // Update the cache in local storage
+    await chrome.storage.local.set({
+        'factCache': {
+            ...cache, 
+            facts: cache.facts
+        }
+    });
+
+    // Store the current fact in local storage separately
+    await chrome.storage.local.set({
+        currentFact:{
+            fact: fact
+        }
+    });
+
+    return fact;
+}
+
 chrome.runtime.onInstalled.addListener(async () => {
     // Fetch and cache the image when the extension is installed
     await fetchAndCacheImages();
+    await fetchAndCacheFacts();
 });
 
 chrome.runtime.onStartup.addListener(async () => {
     await updateImageCache();
+    await updateFactCache();
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
@@ -92,6 +173,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         })
         .catch(error => {
             console.error('Error fetching image:', error);
+            sendResponse({ success: false, error: error.message });
+        });
+    }
+    return true;
+});
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if(msg.action === 'fetchFact') {
+        updateFactCache().then( () => {
+            sendResponse({ success: true });
+        })
+        .catch(error => {
+            console.error('Error fetching fact:', error);
             sendResponse({ success: false, error: error.message });
         });
     }
