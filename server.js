@@ -55,6 +55,23 @@ app.get('/api/images', async(req, res) => {
     // });
 });
 
+// Route to fetch random facts
+app.get('/api/facts', async(req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+    const filePath = path.join(__dirname, 'facts.json');
+        
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    // Loop through and select 5 random facts to cache
+    let randomFacts = [];
+    for(let i = 0; i < 5; i++) {
+        const factIdx = Math.floor(Math.random() * data.length);
+        randomFacts.push(data[factIdx]);
+    }
+    // Send the random facts back to the client
+    res.json({ facts: randomFacts });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
