@@ -1,10 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
+const {loadFacts, getRandomFact} = require('./factLoader');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Load facts from the external URL
+loadFacts();
 
 app.use(cors({
     origin: '*',
@@ -47,16 +51,10 @@ app.get('/api/images', async(req, res) => {
 
 // Route to fetch random facts
 app.get('/api/facts', async(req, res) => {
-    const fs = require('fs');
-    const path = require('path');
-    const filePath = path.join(__dirname, 'facts.json');
-        
-    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     // Loop through and select 5 random facts to cache
     let randomFacts = [];
     for(let i = 0; i < 5; i++) {
-        const factIdx = Math.floor(Math.random() * data.length);
-        randomFacts.push(data[factIdx]);
+        randomFacts.push(getRandomFact());
     }
     // Send the random facts back to the client
     res.json({ facts: randomFacts });
