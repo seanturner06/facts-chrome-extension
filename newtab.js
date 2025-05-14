@@ -21,66 +21,121 @@ function typeEffect(element, text, speed, callback=null){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Fetch a random image from local storage
-    chrome.storage.local.get('currentImage', (result) => {
-        if (result.currentImage) {
-            document.body.style.backgroundImage = `url('${result.currentImage.url}')`;
-        } else {
-          document.body.style.backgroundColor = '#333'; // fallback color
-        }
-
-        const authorLink = document.getElementById('author'); 
-        authorLink.textContent = result.currentImage.photographer;
-        authorLink.href = result.currentImage.photographerUrl;
-
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        img.src = result.currentImage.url;
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 10;
-            canvas.height = 10;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, 10, 10);
-            const imageData = ctx.getImageData(0, 0, 10, 10).data;
-            let r = 0, g = 0, b = 0;
-            let count = 0; 
-            for (let i = 0; i < imageData.length; i += 4) {
-                r += imageData[i];
-                g += imageData[i + 1];
-                b += imageData[i + 2];
-                count++;
-            }
-            r = Math.round(r / count);
-            g = Math.round(g / count);
-            b = Math.round(b / count);
-            // Calculate luminance (better than simple brightness)
-            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    console.log('New tab page loading - waiting for data to be ready...');
+    
+    // Show loading state initially
+    document.body.style.backgroundColor = '#333';
+    const factContainer = document.getElementById('fact-container');
+    if (factContainer) {
+        factContainer.textContent = 'Loading amazing content...';
+    }
+    
+        console.log('Timeout complete, attempting to load content...');
+        
+        // Fetch both image and fact in a single storage call
+        chrome.storage.local.get(['currentImage', 'currentFact'], (result) => {
+            console.log('Storage data received:', result);
             
-            if (luminance > 0.5) {
-                // Light color - use it for text on dark background
-                document.getElementById('fact-container').style.color = `rgb(${r}, ${g}, ${b})`;
-                document.getElementById('fact-container').style.backgroundColor = `rgba(0, 0, 0, 0.8)`;
+            // Handle the image
+            if (result && result.currentImage && result.currentImage.url) {
+                console.log('Valid image found in storage:', result.currentImage.url);
+                document.body.style.backgroundImage = `url('${result.currentImage.url}')`;
+                
+                const authorLink = document.getElementById('author'); 
+                if (authorLink) {
+                    if (result.currentImage.photographer) {
+                        authorLink.textContent = result.currentImage.photographer;
+                    } else {
+                        authorLink.textContent = 'Unknown Photographer';
+                    }
+                    
+                    if (result.currentImage.photographerUrl) {
+                        authorLink.href = result.currentImage.photographerUrl;
+                    } else {
+                        authorLink.href = '#'; // fallback link
+                    }
+                }
+                
+                // Image color processing - with defensive checks
+                try {
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    img.onerror = (error) => {
+                        console.error('Error loading image for processing:', error);
+                    };
+                    
+                    img.onload = () => {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = 10;
+                            canvas.height = 10;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, 10, 10);
+                            const imageData = ctx.getImageData(0, 0, 10, 10).data;
+                            let r = 0, g = 0, b = 0;
+                            let count = 0; 
+                            for (let i = 0; i < imageData.length; i += 4) {
+                                r += imageData[i];
+                                g += imageData[i + 1];
+                                b += imageData[i + 2];
+                                count++;
+                            }
+                            r = Math.round(r / count);
+                            g = Math.round(g / count);
+                            b = Math.round(b / count);
+                            // Calculate luminance (better than simple brightness)
+                            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                            
+                            const factContainer = document.getElementById('fact-container');
+                            if (factContainer) {
+                                if (luminance > 0.5) {
+                                    // Light color - use it for text on dark background
+                                    factContainer.style.color = `rgb(${r}, ${g}, ${b})`;
+                                    factContainer.style.backgroundColor = `rgba(0, 0, 0, 0.8)`;
+                                } else {
+                                    // Dark color - use it for text on light background
+                                    factContainer.style.color = `rgb(${r}, ${g}, ${b})`;
+                                    factContainer.style.backgroundColor = `rgba(255, 255, 255, 0.8)`;
+                                }
+                            }
+                        } catch (colorError) {
+                            console.error('Error processing image colors:', colorError);
+                        }
+                    };
+                    
+                    // Set src AFTER setting up event handlers
+                    img.src = result.currentImage.url;
+                } catch (imgError) {
+                    console.error('Error in image processing setup:', imgError);
+                }
             } else {
-                // Dark color - use it for text on light background
-                document.getElementById('fact-container').style.color = `rgb(${r}, ${g}, ${b})`;
-                document.getElementById('fact-container').style.backgroundColor = `rgba(255, 255, 255, 0.8)`;
+                console.warn('No valid image found in storage');
+                document.body.style.backgroundColor = '#333'; // fallback color
+                
+                const authorLink = document.getElementById('author');
+                if (authorLink) {
+                    authorLink.textContent = 'Unknown Photographer';
+                    authorLink.href = '#';
+                }
             }
-        }
-
-        chrome.storage.local.get('currentFact', (result) => {
-            if(result && result.currentFact && result.currentFact.fact) {
+            
+            // Handle the fact - directly within the same callback
+            if (result && result.currentFact && result.currentFact.fact) {
+                console.log('Valid fact found in storage:', result.currentFact.fact);
                 const factContainer = document.getElementById('fact-container');
-                typeEffect(factContainer, result.currentFact.fact, 25);
-            }else {
-                console.error("No fact found in local storage.");
+                if (factContainer) {
+                    typeEffect(factContainer, result.currentFact.fact, 25);
+                }
+            } else {
+                console.warn('No valid fact found in storage');
+                const factContainer = document.getElementById('fact-container');
+                if (factContainer) {
+                    factContainer.textContent = 'Welcome to Facts Extension!';
+                }
             }
-        })
-    });
+        });
 
-    // Trigger background to fetch a new image for next time
-    chrome.runtime.sendMessage({ action: 'fetchImage' });
-
-    // Trigger background to fetch a new fact for next time
-    chrome.runtime.sendMessage({ action: 'fetchFact' });
+        // Trigger background to fetch new content for next time
+        chrome.runtime.sendMessage({ action: 'fetchImage' });
+        chrome.runtime.sendMessage({ action: 'fetchFact' });
 });

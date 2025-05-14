@@ -29,7 +29,9 @@ async function fetchAndCacheImages() {
     };
     
     // Cache the images in local storage
-    await chrome.storage.local.set({'imageCache': updatedCache});
+    await new Promise(resolve => {
+        chrome.storage.local.set({'imageCache': updatedCache}, resolve);
+    });
     console.log(`Successfully cached ${data.images.length} images`);
     // Return the new images
     return updatedCache.images;
@@ -56,21 +58,25 @@ async function updateImageCache(){
     // Select an image from the cache
     const image = cache.images.shift();
     // Update the cache in local storage
-    await chrome.storage.local.set({
+    await new Promise(resolve => {
+        chrome.storage.local.set({
         'imageCache': {
             ...cache, 
             images: cache.images
-        }
-    });
+            },
+        }, resolve);
+    }); 
 
     // Store the current image in local storage separately
-    await chrome.storage.local.set({
+    await new Promise( resolve => {
+        chrome.storage.local.set({
         currentImage:{
             imageId: image.imageId, 
             url: image.url, 
             photographer: image.photographer.name,
             photographerUrl: image.photographer.url,
-        }
+            }
+        }, resolve);
     });
 
     return image;
@@ -99,8 +105,6 @@ async function fetchAndCacheFacts() {
     // Parse the response as JSON
     const data = await response.json();
 
-    console.log(data);
-
     // Create a new factCache 
     const updatedCache = {
         facts: [...cache.facts, ...data.facts], 
@@ -108,7 +112,9 @@ async function fetchAndCacheFacts() {
     };
     
     // Cache the images in local storage
-    await chrome.storage.local.set({'factCache': updatedCache});
+    await new Promise(resolve => {
+        chrome.storage.local.set({'factCache': updatedCache}, resolve); 
+    });
     console.log(`Successfully cached ${data.facts.length} facts`);
     // Return the new facts
     return updatedCache.facts;
@@ -118,8 +124,6 @@ async function updateFactCache() {
     const storage = await chrome.storage.local.get('factCache');
     let cache = storage.factCache || { facts: [] };
 
-    console.log(cache);
-
     // If we do not have enough fact in the cache, fetch a new batch
     if(cache.facts.length <= 1){
         console.log("Fetching new facts...");
@@ -127,7 +131,6 @@ async function updateFactCache() {
 
         const updatedStorage = await chrome.storage.local.get('factCache'); 
         cache = updatedStorage.factCache;
-        console.log(updatedStorage.factCache);
 
         if(!cache || !cache.facts || cache.facts.length === 0) {
             console.error("No facts found in cache after fetching.");
@@ -138,16 +141,23 @@ async function updateFactCache() {
     // Select an fact from the cache
     const fact = cache.facts.shift();
     // Update the cache in local storage
-    await chrome.storage.local.set({
+    await new Promise(resolve => {
+        chrome.storage.local.set({
         'factCache': {
             ...cache, 
             facts: cache.facts
         }
-    });
+    }
+    , resolve);
+    }
+    );
 
     // Store the current fact in local storage separately
-    await chrome.storage.local.set({
+    await new Promise(resolve => {
+        chrome.storage.local.set({
         currentFact: fact
+    }, 
+        resolve);
     });
 
     return fact;
@@ -155,13 +165,24 @@ async function updateFactCache() {
 
 chrome.runtime.onInstalled.addListener(async () => {
     // Fetch and cache the image when the extension is installed
-    await fetchAndCacheImages();
-    await fetchAndCacheFacts();
+    await Promise.all([
+        fetchAndCacheImages(),
+        fetchAndCacheFacts()
+    ]);
+
+    await Promise.all([
+        updateFactCache(),
+        updateImageCache()
+    ]);
+    console.log('Extension installed and caches updated');
 });
 
 chrome.runtime.onStartup.addListener(async () => {
-    await updateImageCache();
-    await updateFactCache();
+    await Promise.all([
+        updateFactCache(),
+        updateImageCache()
+    ]);
+    console.log('Extension started and caches updated');
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
