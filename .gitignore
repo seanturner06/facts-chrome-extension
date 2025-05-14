@@ -410,3 +410,5 @@ facts.json
 convert.py
 
 /.dist
+/node_modules
+/.vscode

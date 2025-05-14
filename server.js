@@ -45,14 +45,14 @@ app.get('/api/images', async(req, res) => {
     res.json({images: filteredResults});
 
     // Make sure to properly let Unplash know that the images were 'downloaded.'
-    filteredResults.forEach(image => {
-        fetch(image.download_location, {
-            method:'GET', 
-            headers:{
-                Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
-            }
-        }).catch(error => console.error('Error triggering download:', error));
-    });
+    // filteredResults.forEach(image => {
+    //     fetch(image.downloadLocation, {
+    //         method:'GET', 
+    //         headers:{
+    //             Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
+    //         }
+    //     }).catch(error => console.error('Error triggering download:', error));
+    // });
 });
 
 app.listen(PORT, () => {

@@ -2,7 +2,7 @@ async function fetchAndCacheImages() {
 
     // If we do not have enough images in the cache, fetch a new batch 
     const storage = await chrome.storage.local.get('imageCache');
-    const cache = storage.imageCache || { images: [] };
+    let cache = storage.imageCache || { images: [] };
 
     // If we already have enough images, do not fetch new ones
     if(cache.images.length >= 10){
@@ -13,7 +13,7 @@ async function fetchAndCacheImages() {
     console.log(`Fetching new images...`);
 
     // Fetch a batch of images from the proxy server
-    const response = await fetch('https://localhost:3000/api/images');
+    const response = await fetch('http://localhost:3000/api/images');
 
     if(!response.ok){
         throw new Error(`Server responded with status: ${response.status}`);
@@ -37,7 +37,7 @@ async function fetchAndCacheImages() {
 
 async function updateImageCache(){
     const storage = await chrome.storage.local.get('imageCache');
-    const cache = storage.imageCache || { images: [] };
+    let cache = storage.imageCache || { images: [] };
 
     // If we do not have enough images in the cache, fetch a new batch
     if(cache.images.length <= 1){
@@ -81,13 +81,19 @@ chrome.runtime.onInstalled.addListener(async () => {
     await fetchAndCacheImages();
 });
 
-chrome.runtime.onStartUp.addListener(async () => {
+chrome.runtime.onStartup.addListener(async () => {
     await updateImageCache();
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === 'fetchImage') {
-        updateImageCache();
+        updateImageCache().then(() => {
+            sendResponse({ success: true });
+        })
+        .catch(error => {
+            console.error('Error fetching image:', error);
+            sendResponse({ success: false, error: error.message });
+        });
     }
     return true;
 });
