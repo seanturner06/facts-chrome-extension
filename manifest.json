@@ -12,6 +12,5 @@
     "background": {
         "service_worker": "background.js"
     },
-    "host_permissions": ["https://localhost:3000/api/images", 
-        "https://localhost:3000/api/facts"]
+    "host_permissions": ["https://facts-chrome-extension.onrender.com/*"]
 }

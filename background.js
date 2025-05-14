@@ -13,7 +13,7 @@ async function fetchAndCacheImages() {
     console.log(`Fetching new images...`);
 
     // Fetch a batch of images from the proxy server
-    const response = await fetch(new URL('http://localhost:3000/api/images'));
+    const response = await fetch(new URL(`${API_BASE}/api/images`));
 
     if(!response.ok){
         throw new Error(`Server responded with status: ${response.status}`);
@@ -96,7 +96,7 @@ async function fetchAndCacheFacts() {
     console.log(`Fetching new facts...`);
 
     // Fetch a batch of images from the proxy server
-    const response = await fetch(new URL('http://localhost:3000/api/facts'));
+    const response = await fetch(new URL(`${API_BASE}/api/facts`));
 
     if(!response.ok){
         throw new Error(`Server responded with status: ${response.status}`);
