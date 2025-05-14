@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "Facts You Should Know",
+    "version": "1.0.0",
+    "description": "A Chrome extension that provides amazing wallpapers and interesting facts about the world", 
+    "chrome_url_overrides": {
+        "newtab": "newtab.html"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "host_permissions": ["https://localhost:3000/api/images"]
+}

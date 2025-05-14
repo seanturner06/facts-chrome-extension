@@ -399,3 +399,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Environment files
+.env
+.env.*
+# Data files
+facts.txt
+facts.json
+# Custom script files
+convert.py
+
+/.dist
+/node_modules
+/.vscode
