@@ -186,27 +186,22 @@ chrome.runtime.onStartup.addListener(async () => {
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.action === 'fetchImage') {
-        updateImageCache().then(() => {
+    if (msg.action === 'fetchAndCacheData') {
+        Promise.all([
+            updateImageCache(), 
+            updateFactCache()
+        ])
+        .then(()=>{
+            console.log('Data fetched and cached');
             sendResponse({ success: true });
         })
-        .catch(error => {
-            console.error('Error fetching image:', error);
-            sendResponse({ success: false, error: error.message });
+        .catch(err => {
+            console.error('Error fetching and caching data:', err);
+            sendResponse({ success: false, error: err.message });
         });
-    }
-    return true;
-});
-
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if(msg.action === 'fetchFact') {
-        updateFactCache().then( () => {
-            sendResponse({ success: true });
-        })
-        .catch(error => {
-            console.error('Error fetching fact:', error);
-            sendResponse({ success: false, error: error.message });
-        });
+    }else{
+        console.log('Unknown message action:', msg.action);
+        sendResponse({ success: false, error: 'Unknown action' });
     }
     return true;
 });

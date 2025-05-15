@@ -136,6 +136,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Trigger background to fetch new content for next time
-        chrome.runtime.sendMessage({ action: 'fetchImage' });
-        chrome.runtime.sendMessage({ action: 'fetchFact' });
+        chrome.runtime.sendMessage({ action: 'fetchAndCacheData' }); 
 });
