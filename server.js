@@ -34,16 +34,22 @@ app.get('/api/images', async(req, res) => {
 
     const data = await response.json();
 
-    // Select the first 10 images from the results to send back
-    const filteredResults = data.results.slice(0,5).map(result =>({
-        imageId:result.id, 
-        url: result.urls.regular,
-        downloadLocation: result.links.download_location,
-        photographer:{
-            name: result.user.name,
-            url: result.user.links.html
+    let filteredResults = [];
+    let size = data.results.length;
+
+    for(let i = 0; i < 5; i++) {
+        const randomIndex = Math.floor(Math.random() * size);
+        let result = {
+            imageId: data.results[randomIndex].id, 
+            url: data.results[randomIndex].urls.regular,
+            downloadLocation: data.results[randomIndex].links.download_location,
+            photographer:{
+                name: data.results[randomIndex].user.name,
+                url: data.results[randomIndex].user.links.html
+            }
         }
-    }));
+        filteredResults.push(result);
+    }
 
     // Send the filtered results back to the client
     res.json({images: filteredResults});
