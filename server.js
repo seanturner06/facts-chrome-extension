@@ -1,10 +1,13 @@
 const express = require('express');
+const limiter = require('express-rate-limit');
+const compression = require('compression')
 const cors = require('cors');
 const fetch = require('node-fetch');
 const {loadFacts, getRandomFact} = require('./factLoader');
 require('dotenv').config();
 
 const app = express();
+app.use(compression());
 const PORT = process.env.PORT || 3000;
 
 // Load facts from the external URL

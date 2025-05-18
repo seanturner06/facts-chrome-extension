@@ -89,8 +89,8 @@ async function fetchAndCacheFacts() {
     const storage = await chrome.storage.local.get('factCache');
     let cache = storage.factCache || { facts: [] };
 
-    // If we already have enough images, do not fetch new ones
-    if(cache.facts.length >= 5){
+    // If we already have enough facts, do not fetch new ones
+    if(cache.facts.length >= 1){
         console.log(`Already have ${cache.facts.length} facts in cache`);
         return cache.facts;
     }
@@ -166,24 +166,22 @@ async function updateFactCache() {
 
 chrome.runtime.onInstalled.addListener(async () => {
     // Fetch and cache the image when the extension is installed
-    await Promise.all([
-        fetchAndCacheImages(),
-        fetchAndCacheFacts()
-    ]);
+    updateFactCache()
+        .then(() => console.log('Fact cache updated on install'))
+        .catch(err => console.error('Fact cache update error:', err));
 
-    await Promise.all([
-        updateFactCache(),
-        updateImageCache()
-    ]);
-    console.log('Extension installed and caches updated');
+    updateImageCache()
+        .then(() => console.log('Image cache updated on install'))
+        .catch(err => console.error('Image cache update error:', err));
 });
 
 chrome.runtime.onStartup.addListener(async () => {
-    await Promise.all([
-        updateFactCache(),
-        updateImageCache()
-    ]);
-    console.log('Extension started and caches updated');
+    updateFactCache()
+        .then(() => console.log('Facts cache updated on startup'))
+        .catch(err => console.error('Fact cache update error:', err));
+    updateImageCache()
+        .then(() => console.log('Images cache updated on startup'))
+        .catch(err => console.error('Image cache update error:', err));
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
