@@ -1,4 +1,5 @@
 const API_BASE = 'https://facts-chrome-extension.onrender.com';
+
 async function fetchAndCacheImages() {
 
     // If we do not have enough images in the cache, fetch a new batch 
@@ -6,7 +7,7 @@ async function fetchAndCacheImages() {
     let cache = storage.imageCache || { images: [] };
 
     // If we already have enough images, do not fetch new ones
-    if(cache.images.length >= 5){
+    if(cache.images.length >= 1){
         console.log(`Already have ${cache.images.length} images in cache`);
         return cache.images;
     }
