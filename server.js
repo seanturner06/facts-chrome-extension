@@ -1,13 +1,11 @@
 const express = require('express');
 const limiter = require('express-rate-limit');
-const compression = require('compression')
 const cors = require('cors');
 const fetch = require('node-fetch');
 const {loadFacts, getRandomFact} = require('./factLoader');
 require('dotenv').config();
 
 const app = express();
-app.use(compression());
 const PORT = process.env.PORT || 3000;
 
 // Load facts from the external URL
@@ -44,7 +42,7 @@ app.get('/api/images', async(req, res) => {
         const randomIndex = Math.floor(Math.random() * size);
         let result = {
             imageId: data.results[randomIndex].id, 
-            url: data.results[randomIndex].urls.regular,
+            url: data.results[randomIndex].urls.small,
             downloadLocation: data.results[randomIndex].links.download_location,
             photographer:{
                 name: data.results[randomIndex].user.name,
