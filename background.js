@@ -145,16 +145,6 @@ chrome.runtime.onInstalled.addListener(() => {
         .catch(err => console.error('Image cache update error:', err));
 });
 
-chrome.runtime.onStartup.addListener(() => {
-    updateFactCache()
-        .then(() => console.log('Fact cache updated on startup'))
-        .catch(err => console.error('Fact cache update error:', err));
-
-    updateImageCache()
-        .then(() => console.log('Image cache updated on startup'))
-        .catch(err => console.error('Image cache update error:', err));
-});
-
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === 'fetchAndCacheData') {
         Promise.all([
