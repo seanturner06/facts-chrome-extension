@@ -39,7 +39,7 @@ app.get('/api/images', async(req, res) => {
     let size = data.results.length;
 
     for(let i = 0; i < 10; i++) {
-        let randomIndex = Math.floor(Math.random() * size);
+        const randomIndex = Math.floor(Math.random() * size);
         let result = {
             imageId: data.results[randomIndex].id, 
             url: data.results[randomIndex].urls.regular,
