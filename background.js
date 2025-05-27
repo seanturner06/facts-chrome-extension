@@ -1,82 +1,70 @@
 const API_BASE = 'https://facts-chrome-extension.onrender.com';
 
-async function fetchAndCacheImages() {
-
-    // If we do not have enough images in the cache, fetch a new batch 
+async function updateImageCache() {
     const storage = await chrome.storage.local.get('imageCache');
     let cache = storage.imageCache || { images: [] };
 
-    // If we already have enough images, do not fetch new ones
-    if(cache.images.length >= 1){
-        console.log(`Already have ${cache.images.length} images in cache`);
-        return cache.images;
-    }
-
-    console.log(`Fetching new images...`);
-
-    // Fetch a batch of images from the proxy server
-    const response = await fetch(new URL(`${API_BASE}/api/images`));
-
-    if(!response.ok){
-        throw new Error(`Server responded with status: ${response.status}`);
-    }
-
-    // Parse the response as JSON
-    const data = await response.json();
-
-    // Create a new imageCache 
-    const updatedCache = {
-        images: [...cache.images, ...data.images], 
-        lastUpdated: Date.now()
-    };
-    
-    // Cache the images in local storage
-    await new Promise(resolve => {
-        chrome.storage.local.set({'imageCache': updatedCache}, resolve);
-    });
-    console.log(`Successfully cached ${data.images.length} images`);
-    // Return the new images
-    return updatedCache.images;
-}
-
-async function updateImageCache(){
-    const storage = await chrome.storage.local.get('imageCache');
-    let cache = storage.imageCache || { images: [] };
-
+    // Check if we have enough images in the cache
     // If we do not have enough images in the cache, fetch a new batch
-    if(cache.images.length <= 1){
+    if (cache.images.length <= 1) {
         console.log("Fetching new images...");
-        await fetchAndCacheImages();
+        // Fetch a batch of images from the proxy server
+        const response = await fetch(new URL(`${API_BASE}/api/images`));
 
-        const updatedStorage = await chrome.storage.local.get('imageCache'); 
-        cache = updatedStorage.imageCache; 
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
 
-        if(!cache || !cache.images || cache.images.length === 0) {
+        // Parse the response as JSON
+        const data = await response.json();
+
+        if (!data || !data.images || data.images.length === 0) {
+            console.error("No images found.");
+            return;
+        }
+        // Create a new imageCache 
+        const updatedCache = {
+            images: [...cache.images, ...data.images]
+        };
+        // Cache the images in local storage
+        await new Promise(resolve => {
+            chrome.storage.local.set({ 'imageCache': updatedCache }, resolve);
+        });
+        // Make sure the images were saved to the cache
+        const updatedStorage = await chrome.storage.local.get('imageCache');
+        cache = updatedStorage.imageCache;
+        // Check if the cache was updated correctly
+        if (!cache || !cache.images || cache.images.length === 0) {
             console.error("No images found in cache after fetching.");
             return;
         }
+        console.log(`Successfully cached ${data.images.length} images`); 
     }
+    // Update the current image in local storage
+    updateCurrentImage();
+    // Return the new images
+    return cache.images;
+} 
+
+async function updateCurrentImage() {
+    const storage = await chrome.storage.local.get('imageCache');
+    const cache = storage.imageCache || { images: [] };
 
     // Select an image from the cache
     const image = cache.images.shift();
     // Update the cache in local storage
     await new Promise(resolve => {
-        chrome.storage.local.set({
-        'imageCache': {
-            ...cache, 
-            images: cache.images
-            },
-        }, resolve);
-    }); 
+        chrome.storage.local.set({'imageCache': {images: cache.images}}, resolve);
+    });
 
     // Store the current image in local storage separately
-    await new Promise( resolve => {
+    await new Promise(resolve => {
         chrome.storage.local.set({
-        currentImage:{
-            imageId: image.imageId, 
-            url: image.url, 
-            photographer: image.photographer.name,
-            photographerUrl: image.photographer.url,
+            currentImage: {
+                imageId: image.imageId,
+                url: image.url,
+                photographer: image.photographer.name,
+                photographerUrl: image.photographer.url,
             }
         }, resolve);
     });
@@ -84,88 +72,70 @@ async function updateImageCache(){
     return image;
 }
 
-async function fetchAndCacheFacts() {
-    // If we do not have enough images in the cache, fetch a new batch 
-    const storage = await chrome.storage.local.get('factCache');
-    let cache = storage.factCache || { facts: [] };
-
-    // If we already have enough facts, do not fetch new ones
-    if(cache.facts.length >= 1){
-        console.log(`Already have ${cache.facts.length} facts in cache`);
-        return cache.facts;
-    }
-
-    console.log(`Fetching new facts...`);
-
-    // Fetch a batch of images from the proxy server
-    const response = await fetch(new URL(`${API_BASE}/api/facts`));
-
-    if(!response.ok){
-        throw new Error(`Server responded with status: ${response.status}`);
-    }
-
-    // Parse the response as JSON
-    const data = await response.json();
-
-    // Create a new factCache 
-    const updatedCache = {
-        facts: [...cache.facts, ...data.facts], 
-        lastUpdated: Date.now()
-    };
-    
-    // Cache the images in local storage
-    await new Promise(resolve => {
-        chrome.storage.local.set({'factCache': updatedCache}, resolve); 
-    });
-    console.log(`Successfully cached ${data.facts.length} facts`);
-    // Return the new facts
-    return updatedCache.facts;
-}
-
 async function updateFactCache() {
     const storage = await chrome.storage.local.get('factCache');
     let cache = storage.factCache || { facts: [] };
 
     // If we do not have enough fact in the cache, fetch a new batch
-    if(cache.facts.length <= 1){
+    if (cache.facts.length <= 1) {
         console.log("Fetching new facts...");
-        await fetchAndCacheFacts();
+        // Fetch a batch of images from the proxy server
+        const response = await fetch(new URL(`${API_BASE}/api/facts`));
+    
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+    
+        // Parse the response as JSON
+        const data = await response.json();
+    
+        // Create a new factCache 
+        const updatedCache = {
+            facts: [...cache.facts, ...data.facts]
+        };
+    
+        // Cache the images in local storage
+        await new Promise(resolve => {
+            chrome.storage.local.set({ 'factCache': updatedCache }, resolve);
+        });
+        console.log(`Successfully cached ${data.facts.length} facts`);
 
-        const updatedStorage = await chrome.storage.local.get('factCache'); 
+        const updatedStorage = await chrome.storage.local.get('factCache');
         cache = updatedStorage.factCache;
 
-        if(!cache || !cache.facts || cache.facts.length === 0) {
+        if (!cache || !cache.facts || cache.facts.length === 0) {
             console.error("No facts found in cache after fetching.");
             return;
         }
     }
+    updateCurrentFact();
+    // Return the new facts
+    return cache.facts;
+}
+
+async function updateCurrentFact() {
+    const storage = await chrome.storage.local.get('factCache');
+    const cache = storage.factCache || { facts: [] };
 
     // Select an fact from the cache
     const fact = cache.facts.shift();
     // Update the cache in local storage
     await new Promise(resolve => {
         chrome.storage.local.set({
-        'factCache': {
-            ...cache, 
-            facts: cache.facts
-        }
-    }
-    , resolve);
+            'factCache': { facts: cache.facts } 
+        }, resolve);
     });
 
     // Store the current fact in local storage separately
     await new Promise(resolve => {
         chrome.storage.local.set({
-        currentFact: fact
-    },
-        resolve);
+            currentFact: fact
+        }, resolve);
     });
-
     return fact;
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
-    // Fetch and cache the image when the extension is installed
     updateFactCache()
         .then(() => console.log('Fact cache updated on install'))
         .catch(err => console.error('Fact cache update error:', err));
@@ -175,30 +145,21 @@ chrome.runtime.onInstalled.addListener(async () => {
         .catch(err => console.error('Image cache update error:', err));
 });
 
-chrome.runtime.onStartup.addListener(async () => {
-    updateFactCache()
-        .then(() => console.log('Facts cache updated on startup'))
-        .catch(err => console.error('Fact cache update error:', err));
-    updateImageCache()
-        .then(() => console.log('Images cache updated on startup'))
-        .catch(err => console.error('Image cache update error:', err));
-});
-
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === 'fetchAndCacheData') {
         Promise.all([
-            updateImageCache(), 
+            updateImageCache(),
             updateFactCache()
         ])
-        .then(()=>{
-            console.log('Data fetched and cached');
-            sendResponse({ success: true });
-        })
-        .catch(err => {
-            console.error('Error fetching and caching data:', err);
-            sendResponse({ success: false, error: err.message });
-        });
-    }else{
+            .then(() => {
+                console.log('Data fetched and cached');
+                sendResponse({ success: true });
+            })
+            .catch(err => {
+                console.error('Error fetching and caching data:', err);
+                sendResponse({ success: false, error: err.message });
+            });
+    } else {
         console.log('Unknown message action:', msg.action);
         sendResponse({ success: false, error: 'Unknown action' });
     }
