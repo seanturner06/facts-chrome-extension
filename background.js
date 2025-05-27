@@ -99,14 +99,6 @@ async function updateFactCache() {
             chrome.storage.local.set({ 'factCache': updatedCache }, resolve);
         });
         console.log(`Successfully cached ${data.facts.length} facts`);
-
-        const updatedStorage = await chrome.storage.local.get('factCache');
-        cache = updatedStorage.factCache;
-
-        if (!cache || !cache.facts || cache.facts.length === 0) {
-            console.error("No facts found in cache after fetching.");
-            return;
-        }
     }
     updateCurrentFact();
     // Return the new facts

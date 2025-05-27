@@ -38,7 +38,7 @@ app.get('/api/images', async(req, res) => {
     let filteredResults = [];
     let size = data.results.length;
 
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < 5; i++) {
         const randomIndex = Math.floor(Math.random() * size);
         let result = {
             imageId: data.results[randomIndex].id, 
@@ -58,9 +58,9 @@ app.get('/api/images', async(req, res) => {
 
 // Route to fetch random facts
 app.get('/api/facts', async(req, res) => {
-    // Loop through and select 5 random facts to cache
+    // Loop through and select 10 random facts to cache
     let randomFacts = [];
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < 5; i++) {
         randomFacts.push(getRandomFact());
     }
     // Send the random facts back to the client
