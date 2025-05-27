@@ -42,7 +42,7 @@ app.get('/api/images', async(req, res) => {
         let randomIndex = Math.floor(Math.random() * size);
         let result = {
             imageId: data.results[randomIndex].id, 
-            url: data.results[randomIndex].urls.small,
+            url: data.results[randomIndex].urls.regular,
             downloadLocation: data.results[randomIndex].links.download_location,
             photographer:{
                 name: data.results[randomIndex].user.name,

@@ -44,7 +44,7 @@ async function updateImageCache() {
     updateCurrentImage();
     // Return the new images
     return cache.images;
-} 
+}
 
 async function updateCurrentImage() {
     const storage = await chrome.storage.local.get('imageCache');
