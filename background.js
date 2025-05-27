@@ -135,7 +135,7 @@ async function updateCurrentFact() {
     return fact;
 }
 
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(() => {
     updateFactCache()
         .then(() => console.log('Fact cache updated on install'))
         .catch(err => console.error('Fact cache update error:', err));
@@ -145,7 +145,7 @@ chrome.runtime.onInstalled.addListener(async () => {
         .catch(err => console.error('Image cache update error:', err));
 });
 
-chrome.runtime.onStartUp.addListener(async ()=> {
+chrome.runtime.onStartup.addListener(() => {
     updateFactCache()
         .then(() => console.log('Fact cache updated on startup'))
         .catch(err => console.error('Fact cache update error:', err));
