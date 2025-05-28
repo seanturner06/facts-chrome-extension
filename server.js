@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const sizeOfData = 10;
 
 // Load facts from the external URL
 loadFacts();
@@ -14,6 +15,8 @@ loadFacts();
 app.use(cors({
     origin: '*',
 }));
+
+// TODO: Add rate limiter 
 
 // Route to fetch a batch of random images
 app.get('/api/images', async(req, res) => {
@@ -36,11 +39,10 @@ app.get('/api/images', async(req, res) => {
     const data = await response.json();
 
     let filteredResults = [];
-    let size = data.results.length;
+    const size = data.results.length;
     let indexes = new Set();
-    let count = 10;
 
-    while(indexes.size < count && indexes.size < size) {
+    while(indexes.size < sizeOfData && indexes.size < size) {
         const randomIndex = Math.floor(Math.random() * size);
         if(!indexes.has(randomIndex)) {
             indexes.add(randomIndex);
@@ -68,7 +70,7 @@ app.get('/api/images', async(req, res) => {
 app.get('/api/facts', async(req, res) => {
     // Loop through and select 10 random facts to cache
     let randomFacts = [];
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < sizeOfData; i++) {
         randomFacts.push(getRandomFact());
     }
     // Send the random facts back to the client

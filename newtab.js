@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (factContainer) {
         factContainer.textContent = 'Loading amazing content...';
     }
-    
-        console.log('Timeout complete, attempting to load content...');
         
         // Fetch both image and fact in a single storage call
         chrome.storage.local.get(['currentImage', 'currentFact'], (result) => {
@@ -85,8 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             b = Math.round(b / count);
                             // Calculate luminance (better than simple brightness)
                             const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-                            
-                            const factContainer = document.getElementById('fact-container');
+                    
                             if (factContainer) {
                                 if (luminance > 0.5) {
                                     // Light color - use it for text on dark background
@@ -122,14 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Handle the fact - directly within the same callback
             if (result && result.currentFact && result.currentFact.fact) {
                 console.log('Valid fact found in storage:', result.currentFact.fact);
-                const factContainer = document.getElementById('fact-container');
                 if (factContainer) {
                     // typeEffect(factContainer, result.currentFact.fact, 25);
                     factContainer.textContent = result.currentFact.fact; 
                 }
             } else {
                 console.warn('No valid fact found in storage');
-                const factContainer = document.getElementById('fact-container');
                 if (factContainer) {
                     factContainer.textContent = 'Welcome to Facts Extension!';
                 }
@@ -137,5 +132,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Trigger background to fetch new content for next time
-        chrome.runtime.sendMessage({ action: 'fetchAndCacheData' }); 
+        chrome.runtime.sendMessage({ action: 'fetchAndCacheData' });
 });
