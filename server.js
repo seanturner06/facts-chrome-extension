@@ -37,18 +37,26 @@ app.get('/api/images', async(req, res) => {
 
     let filteredResults = [];
     let size = data.results.length;
+    let indexes = new Set();
+    let count = 5;
 
-    for(let i = 0; i < 5; i++) {
+    while(indexes.size < count && indexes.size < size) {
         const randomIndex = Math.floor(Math.random() * size);
-        let result = {
-            imageId: data.results[randomIndex].id, 
-            url: data.results[randomIndex].urls.regular,
-            downloadLocation: data.results[randomIndex].links.download_location,
-            photographer:{
-                name: data.results[randomIndex].user.name,
-                url: data.results[randomIndex].user.links.html
-            }
+        if(!indexes.has(randomIndex)) {
+            indexes.add(randomIndex);
         }
+    }
+    // Loop through the selected indexes and create the result objects
+    for(const index of indexes) {
+        let result = {
+            imageId: data.results[index].id, 
+            url: data.results[index].urls.regular,
+            downloadLocation: data.results[index].links.download_location,
+            photographer: {
+                name: data.results[index].user.name,
+                url: data.results[index].user.links.html
+            }
+        };
         filteredResults.push(result);
     }
 
