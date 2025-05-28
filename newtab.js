@@ -67,11 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     img.onload = () => {
                         try {
                             const canvas = document.createElement('canvas');
-                            canvas.width = 10;
-                            canvas.height = 10;
+                            canvas.width = 5;
+                            canvas.height = 5;
                             const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, 10, 10);
-                            const imageData = ctx.getImageData(0, 0, 10, 10).data;
+                            ctx.drawImage(img, 0, 0, 5, 5);
+                            const imageData = ctx.getImageData(0, 0, 5, 5).data;
                             let r = 0, g = 0, b = 0;
                             let count = 0; 
                             for (let i = 0; i < imageData.length; i += 4) {
