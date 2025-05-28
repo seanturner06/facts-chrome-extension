@@ -2,23 +2,23 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 
 // Function to add dynamic typing effect
-function typeEffect(element, text, speed, callback=null){
-    let index = 0;
+// function typeEffect(element, text, speed, callback=null){
+//     let index = 0;
 
-    // Make sure the element is empty before starting
-    element.textContent = '';
+//     // Make sure the element is empty before starting
+//     element.textContent = '';
 
-    function type() {
-        if (index < text.length) {
-            element.textContent += text.charAt(index);
-            index++;
-            setTimeout(type, speed);
-        } else {
-            if (callback) callback();
-        }
-    }
-    type();
-}
+//     function type() {
+//         if (index < text.length) {
+//             element.textContent += text.charAt(index);
+//             index++;
+//             setTimeout(type, speed);
+//         } else {
+//             if (callback) callback();
+//         }
+//     }
+//     type();
+// }
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('New tab page loading - waiting for data to be ready...');
@@ -124,7 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Valid fact found in storage:', result.currentFact.fact);
                 const factContainer = document.getElementById('fact-container');
                 if (factContainer) {
-                    typeEffect(factContainer, result.currentFact.fact, 25);
+                    // typeEffect(factContainer, result.currentFact.fact, 25);
+                    factContainer.textContent = result.currentFact.fact; 
                 }
             } else {
                 console.warn('No valid fact found in storage');
