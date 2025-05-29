@@ -17,7 +17,14 @@ app.use(cors({
     origin: extension_origin,
 }));
 
-// TODO: Add rate limiter 
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 5 minutes
+    limit: 2, // each IP can make up to 10 requests per `windowsMs` (5 minutes)
+    standardHeaders: true, // add the `RateLimit-*` headers to the response
+    legacyHeaders: false, // remove the `X-RateLimit-*` headers from the response
+});
+
+app.use(limiter);
 
 // Route to fetch a batch of random images
 app.get('/api/images', async(req, res) => {
