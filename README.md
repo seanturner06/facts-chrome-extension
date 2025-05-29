@@ -26,5 +26,9 @@ TabFlux is a custom Chrome extension that replaces your new tab with a stunning 
 
 📌 **License**: This project is licensed under a custom license. **Use is strictly prohibited without permission.**
 
-<img width="1429" alt="demo_photo" src="https://github.com/user-attachments/assets/12bef300-3d9c-40fb-a90d-0e33cbea23b4" />
+## Demo 
+
+https://github.com/user-attachments/assets/5039ba74-5e66-405b-b160-9d4661d1c7e4
+
+
 
