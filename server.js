@@ -18,8 +18,8 @@ app.use(cors({
 }));
 
 const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 5 minutes
-    limit: 2, // each IP can make up to 10 requests per `windowsMs` (5 minutes)
+    windowMs: 60 * 60 * 1000, // 60 minutes
+    limit: 3, // each IP can make up to 3 requests per `windowsMs` (60 minutes)
     standardHeaders: true, // add the `RateLimit-*` headers to the response
     legacyHeaders: false, // remove the `X-RateLimit-*` headers from the response
 });
