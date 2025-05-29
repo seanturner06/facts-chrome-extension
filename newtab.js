@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     if (result.currentImage.photographerUrl) {
-                        authorLink.href = result.currentImage.photographerUrl;
+                        authorLink.href = `${result.currentImage.photographerUrl}?utm_source=tabflux&utm_medium=referral`;
                     } else {
                         authorLink.href = '#'; // fallback link
                     }
