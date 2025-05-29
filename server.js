@@ -1,5 +1,5 @@
 const express = require('express');
-const limiter = require('express-rate-limit');
+const {rateLimit} = require('express-rate-limit');
 const cors = require('cors');
 const fetch = require('node-fetch');
 const {loadFacts, getRandomFact} = require('./factLoader');
