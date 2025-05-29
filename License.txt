@@ -1,0 +1,11 @@
+Copyright (c) 2025 Sean Turner
+
+All rights reserved.
+
+This code is the intellectual property of Sean Turner.  
+You are not permitted to use, copy, modify, distribute, or publish any part of this code, in whole or in part, without explicit written permission.
+
+This code is provided for **viewing purposes only**.  
+Any unauthorized use is a violation of copyright law and may be subject to legal action.
+
+By accessing this repository, you acknowledge these terms.
