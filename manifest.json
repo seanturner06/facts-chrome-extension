@@ -1,14 +1,17 @@
 {
     "manifest_version": 3,
-    "name": "Facts You Should Know",
+    "name": "TabFlux",
     "version": "1.0.0",
-    "description": "A Chrome extension that provides amazing wallpapers and interesting facts about the world", 
+    "description": "Beautiful new tabs with facts and Unsplash images", 
     "chrome_url_overrides": {
         "newtab": "newtab.html"
     },
     "permissions": [
         "storage"
     ],
+    "action" : {
+        "default_title": "TabFlux"
+    },
     "background": {
         "service_worker": "background.js"
     },

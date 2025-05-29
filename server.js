@@ -8,12 +8,13 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 const sizeOfData = 10;
+const extension_origin = 'chrome-extension://jpknkolfolpogbfldboijccfihjoeoab';
 
 // Load facts from the external URL
 loadFacts();
 
 app.use(cors({
-    origin: '*',
+    origin: extension_origin,
 }));
 
 // TODO: Add rate limiter 

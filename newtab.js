@@ -1,25 +1,3 @@
-const width = window.innerWidth;
-const height = window.innerHeight;
-
-// Function to add dynamic typing effect
-// function typeEffect(element, text, speed, callback=null){
-//     let index = 0;
-
-//     // Make sure the element is empty before starting
-//     element.textContent = '';
-
-//     function type() {
-//         if (index < text.length) {
-//             element.textContent += text.charAt(index);
-//             index++;
-//             setTimeout(type, speed);
-//         } else {
-//             if (callback) callback();
-//         }
-//     }
-//     type();
-// }
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('New tab page loading - waiting for data to be ready...');
     
