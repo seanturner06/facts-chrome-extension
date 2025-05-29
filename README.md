@@ -24,4 +24,6 @@ TabFlux is a custom Chrome extension that replaces your new tab with a stunning 
 - Deploying full-stack apps using Render
 - Clean project separation between frontend extension logic and backend services
 
+📌 **License**: This project is licensed under a custom license. **Use is strictly prohibited without permission.**
+
 <img width="1433" alt="Screenshot 2025-05-13 at 8 12 49 PM" src="https://github.com/user-attachments/assets/64292cac-3481-4b5a-a642-e75fb6fbeb46" />
