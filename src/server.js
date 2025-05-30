@@ -24,10 +24,8 @@ const limiter = rateLimit({
     legacyHeaders: false, // remove the `X-RateLimit-*` headers from the response
 });
 
-app.use(limiter);
-
 // Route to fetch a batch of random images
-app.get('/api/images', async(req, res) => {
+app.get('/api/images', limiter, async(req, res) => {
     // Parse comma-separated environment variables
     const categories = (process.env.CATEGORIES || 'nature').split(',').map(item => item.trim());
     const pages = (process.env.PAGES || '1').split(',').map(item => Number(item.trim()));
@@ -75,7 +73,7 @@ app.get('/api/images', async(req, res) => {
 });
 
 // Route to fetch random facts
-app.get('/api/facts', async(req, res) => {
+app.get('/api/facts', limiter, async(req, res) => {
     // Loop through and select 10 random facts to cache
     let randomFacts = [];
     for(let i = 0; i < sizeOfData; i++) {
