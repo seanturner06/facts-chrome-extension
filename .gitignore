@@ -412,3 +412,5 @@ convert.py
 /.dist
 /node_modules
 /.vscode
+
+extension.zip
