@@ -13,6 +13,8 @@ const extension_origin = 'chrome-extension://jpknkolfolpogbfldboijccfihjoeoab';
 // Load facts from the external URL
 loadFacts();
 
+app.set('trust proxy', 1); 
+
 app.use(cors({
     origin: extension_origin,
 }));
@@ -22,6 +24,10 @@ const limiter = rateLimit({
     limit: 3, // each IP can make up to 3 requests per `windowsMs` (60 minutes)
     standardHeaders: true, // add the `RateLimit-*` headers to the response
     legacyHeaders: false, // remove the `X-RateLimit-*` headers from the response
+    message: {
+        error: "Too many requests, please try again later!",
+        retryAfter: "1 hour"
+    }
 });
 
 // Route to fetch a batch of random images
