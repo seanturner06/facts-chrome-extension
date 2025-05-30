@@ -1,10 +1,10 @@
 {
     "manifest_version": 3,
-    "name": "TabFlux",
+    "name": "TabFlux - New Tab with Fun & Educational Facts",
     "version": "1.0.0",
-    "description": "Beautiful new tabs with facts and Unsplash images", 
+    "description": "A minimal new tab page that shows random facts and stunning images — a smarter way to browse.", 
     "chrome_url_overrides": {
-        "newtab": "./extension/newtab.html"
+        "newtab": "./newtab.html"
     },
     "permissions": [
         "storage"
@@ -13,7 +13,7 @@
         "default_title": "TabFlux"
     },
     "background": {
-        "service_worker": "./extension/background.js"
+        "service_worker": "./background.js"
     },
     "host_permissions": ["https://facts-chrome-extension.onrender.com/*"]
 }
