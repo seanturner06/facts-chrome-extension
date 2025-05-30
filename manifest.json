@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "description": "Beautiful new tabs with facts and Unsplash images", 
     "chrome_url_overrides": {
-        "newtab": "newtab.html"
+        "newtab": "./extension/newtab.html"
     },
     "permissions": [
         "storage"
@@ -13,7 +13,7 @@
         "default_title": "TabFlux"
     },
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "./extension/background.js"
     },
     "host_permissions": ["https://facts-chrome-extension.onrender.com/*"]
 }
