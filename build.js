@@ -5,7 +5,7 @@ async function build() {
     // 1. Clean output directory
     await fs.emptyDir('./.dist');
     
-    await fs.copy('extension/', './.dist/');
+    await fs.copy('extension/', './.dist/extension');
     // 2. Copy/process files
     await copyFiles();
     
