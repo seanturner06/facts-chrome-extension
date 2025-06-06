@@ -4,16 +4,16 @@
     "version": "1.0.0",
     "description": "A minimal new tab page that shows random facts and stunning images — a smarter way to browse.", 
     "chrome_url_overrides": {
-        "newtab": "./newtab.html"
+        "newtab": "./extension/newtab.html"
     },
     "permissions": [
-        "storage"
+        "storage", "search"
     ],
     "action" : {
         "default_title": "TabFlux"
     },
     "background": {
-        "service_worker": "./background.js"
+        "service_worker": "./extension/background.js"
     },
     "host_permissions": ["https://facts-chrome-extension.onrender.com/*"]
 }

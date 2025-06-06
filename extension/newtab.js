@@ -1,5 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('New tab page loading - waiting for data to be ready...');
+
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        
+            const searchTerm = e.target.value.trim();
+            if (searchTerm) {
+            chrome.search.query({
+                text: searchTerm,
+                disposition: "NEW_TAB"
+            });
+            }
+        }
+    });
     
     // Show loading state initially
     document.body.style.backgroundColor = '#333';
