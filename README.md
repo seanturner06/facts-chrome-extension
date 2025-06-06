@@ -14,7 +14,7 @@ TabFlux is a custom Chrome extension that replaces your new tab with a stunning 
 - **Frontend**: Chrome Extension (HTML, JS)
 - **Backend**: Node.js (Express) hosted on Render
 - **Data**: Private `facts.json` file served securely
-- **External API**: Unsplash (via backend proxy)
+- **External API**: Unsplash (via backend proxy), Chrome (used for executing searches and tab overrides)
 
 ## 🧠 What I Learned
 
