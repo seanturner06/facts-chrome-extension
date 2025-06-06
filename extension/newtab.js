@@ -7,13 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
         
             const searchTerm = e.target.value.trim();
             if (searchTerm) {
-            chrome.search.query({
-                text: searchTerm,
-                disposition: "NEW_TAB"
-            });
+                chrome.search.query({
+                    text: searchTerm,
+                    disposition: "CURRENT_TAB"
+                });
             }
         }
     });
+
+    document.getElementById('searchIcon').addEventListener('click', () => {
+        searchTerm = document.getElementById('searchInput').value.trim(); 
+
+        if (searchTerm) {
+            chrome.search.query({
+                text: searchTerm,
+                disposition: "CURRENT_TAB"
+            });
+        }
+    }); 
     
     // Show loading state initially
     document.body.style.backgroundColor = '#333';
