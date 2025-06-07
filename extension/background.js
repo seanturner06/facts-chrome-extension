@@ -7,7 +7,6 @@ async function updateImageCache() {
     // Check if we have enough images in the cache
     // If we do not have enough images in the cache, fetch a new batch
     if (cache.images.length <= 1) {
-        console.log("Fetching new images...");
         // Fetch a batch of images from the proxy server
         const response = await fetch(new URL(`${API_BASE}/api/images`));
 
@@ -38,7 +37,6 @@ async function updateImageCache() {
             console.error("No images found in cache after fetching.");
             return;
         }
-        console.log(`Successfully cached ${data.images.length} images`); 
     }
     // Update the current image in local storage
     updateCurrentImage();
@@ -78,7 +76,6 @@ async function updateFactCache() {
 
     // If we do not have enough fact in the cache, fetch a new batch
     if (cache.facts.length <= 1) {
-        console.log("Fetching new facts...");
         // Fetch a batch of images from the proxy server
         const response = await fetch(new URL(`${API_BASE}/api/facts`));
     
@@ -98,7 +95,6 @@ async function updateFactCache() {
         await new Promise(resolve => {
             chrome.storage.local.set({ 'factCache': updatedCache }, resolve);
         });
-        console.log(`Successfully cached ${data.facts.length} facts`);
     }
     updateCurrentFact();
     // Return the new facts
@@ -144,15 +140,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             updateFactCache()
         ])
             .then(() => {
-                console.log('Data fetched and cached');
                 sendResponse({ success: true });
             })
             .catch(err => {
                 console.error('Error fetching and caching data:', err);
                 sendResponse({ success: false, error: err.message });
             });
-    } else {
-        console.log('Unknown message action:', msg.action);
+    } else { 
         sendResponse({ success: false, error: 'Unknown action' });
     }
     return true;

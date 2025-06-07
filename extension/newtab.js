@@ -26,11 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.addEventListener('visibilitychange', () => {
-        if(!document.hidden) {
-            document.getElementById('searchInput').clear(); 
-        }
-    }); 
+    window.addEventListener('pageshow', () => {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = '';
+        } 
+    });
     
     // Show loading state initially
     document.body.style.backgroundColor = '#333';
@@ -41,11 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Fetch both image and fact in a single storage call
         chrome.storage.local.get(['currentImage', 'currentFact'], (result) => {
-            console.log('Storage data received:', result);
             
             // Handle the image
             if (result && result.currentImage && result.currentImage.url) {
-                console.log('Valid image found in storage:', result.currentImage.url);
                 document.body.style.backgroundImage = `url('${result.currentImage.url}')`;
                 
                 const authorLink = document.getElementById('author'); 
@@ -127,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Handle the fact - directly within the same callback
             if (result && result.currentFact && result.currentFact.fact) {
-                console.log('Valid fact found in storage:', result.currentFact.fact);
                 if (factContainer) {
                     // typeEffect(factContainer, result.currentFact.fact, 25);
                     factContainer.textContent = result.currentFact.fact; 
