@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 disposition: "CURRENT_TAB"
             });
         }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if(!document.hidden) {
+            document.getElementById('searchInput').clear(); 
+        }
     }); 
     
     // Show loading state initially
