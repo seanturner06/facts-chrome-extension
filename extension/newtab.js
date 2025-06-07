@@ -1,5 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('New tab page loading - waiting for data to be ready...');
+document.addEventListener('DOMContentLoaded', () => { 
 
     document.getElementById('searchInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {

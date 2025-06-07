@@ -125,11 +125,11 @@ async function updateCurrentFact() {
 
 chrome.runtime.onInstalled.addListener(() => {
     updateFactCache()
-        .then(() => console.log('Fact cache updated on install'))
+        .then()
         .catch(err => console.error('Fact cache update error:', err));
 
     updateImageCache()
-        .then(() => console.log('Image cache updated on install'))
+        .then()
         .catch(err => console.error('Image cache update error:', err));
 });
 
