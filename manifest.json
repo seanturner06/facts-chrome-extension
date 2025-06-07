@@ -6,10 +6,16 @@
     "chrome_url_overrides": {
         "newtab": "./extension/newtab.html"
     },
+    "icons":{
+        "16": "./extension/logo.png"
+    }, 
     "permissions": [
         "storage", "search"
     ],
     "action" : {
+        "default_icon":{
+            "16": "./extension/logo.png"
+        },
         "default_title": "TabFlux"
     },
     "background": {
